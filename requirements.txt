@@ -1,0 +1,11 @@
+mlflow==2.5.0
+dagshub
+pandas
+numpy
+scikit-learn
+nltk
+matplotlib
+seaborn
+wordcloud
+xgboost
+Flask
