@@ -12,15 +12,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from mlflow.models import infer_signature
+import dagshub
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 def eval_metrics(actual, pred):
     accuracy = accuracy_score(actual, pred)
-    precision = precision_score(actual, pred, pos_label=1)  # Adjust to match your labels
-    recall = recall_score(actual, pred, pos_label=1)        # Adjust to match your labels
-    f1 = f1_score(actual, pred, pos_label=1)                # Adjust to match your labels
+    precision = precision_score(actual, pred, pos_label=1)
+    recall = recall_score(actual, pred, pos_label=1)
+    f1 = f1_score(actual, pred, pos_label=1)
     return accuracy, precision, recall, f1
 
 def main(alpha):
@@ -62,6 +63,16 @@ def main(alpha):
     print(f"Recall: {recall}")
     print(f"F1 Score: {f1}")
 
+    # Initialize Dagshub
+    dagshub.init(
+        repo_owner='bhupendra2231',
+        repo_name='spam_classification-mlflow',
+        mlflow=True
+    )
+
+    # Set MLflow tracking URI to Dagshub
+    mlflow.set_tracking_uri("https://dagshub.com/bhupendra2231/spam_classification-mlflow.mlflow")
+
     # Log everything with MLflow
     with mlflow.start_run():
         # Log parameters
@@ -101,6 +112,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     np.random.seed(40)
-    mlflow.set_tracking_uri("http://127.0.0.1:5000")
 
     main(args.alpha)
